@@ -90,6 +90,10 @@ closeButton.Font = Enum.Font.GothamBold
 closeButton.TextSize = 16
 closeButton.Parent = frame
 
+local closeUICorner = Instance.new("UICorner")
+closeUICorner.CornerRadius = UDim.new(0, 10)
+closeUICorner.Parent = closeButton
+
 local inputBox = Instance.new("TextBox")
 inputBox.Size = UDim2.new(0, 220, 0, 40)
 inputBox.Position = UDim2.new(0.5, -110, 0.3, 0)
@@ -99,6 +103,16 @@ inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 inputBox.Font = Enum.Font.Gotham
 inputBox.TextSize = 16
 inputBox.Parent = frame
+
+local inputCorner = Instance.new("UICorner")
+inputCorner.CornerRadius = UDim.new(0, 10)
+inputCorner.Parent = inputBox
+
+local errorStroke = Instance.new("UIStroke")
+errorStroke.Thickness = 2
+errorStroke.Color = Color3.fromRGB(255, 50, 50)
+errorStroke.Enabled = false
+errorStroke.Parent = inputBox
 
 local function showError()
     errorStroke.Enabled = true
@@ -127,13 +141,47 @@ local function findClosestMatch(input)
     return nil
 end
 
+local buttonSize = UDim2.new(0, 140, 0, 40)
+local buttonCornerRadius = UDim.new(0, 10)
+
 local teleportButton = Instance.new("TextButton")
+teleportButton.Size = buttonSize
+teleportButton.Position = UDim2.new(0.05, 0, 0.6, 0)
 teleportButton.Text = "ON"
+teleportButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+teleportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+teleportButton.Font = Enum.Font.GothamBold
+teleportButton.TextSize = 18
 teleportButton.Parent = frame
 
+local teleportUICorner = Instance.new("UICorner")
+teleportUICorner.CornerRadius = buttonCornerRadius
+teleportUICorner.Parent = teleportButton
+
 local stopButton = Instance.new("TextButton")
+stopButton.Size = buttonSize
+stopButton.Position = UDim2.new(0.55, -10, 0.6, 0)
 stopButton.Text = "OFF"
+stopButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+stopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+stopButton.Font = Enum.Font.GothamBold
+stopButton.TextSize = 18
 stopButton.Parent = frame
+
+local stopUICorner = Instance.new("UICorner")
+stopUICorner.CornerRadius = buttonCornerRadius
+stopUICorner.Parent = stopButton
+
+local discordLabel = Instance.new("TextLabel")
+discordLabel.Size = UDim2.new(1, 0, 0, 20)
+discordLabel.Position = UDim2.new(0, 0, 0.85, 0)
+discordLabel.Text = "Discord: coder.gg"
+discordLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+discordLabel.TextTransparency = 0.5
+discordLabel.Font = Enum.Font.Gotham
+discordLabel.TextSize = 14
+discordLabel.BackgroundTransparency = 1
+discordLabel.Parent = frame
 
 inputBox.FocusLost:Connect(function(enterPressed)
     if enterPressed then
@@ -182,24 +230,46 @@ stopButton.MouseButton1Click:Connect(function()
     if player.Character and player.Character:FindFirstChild("Humanoid") then
         player.Character.Humanoid.Sit = false
     end
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+        player.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+    end
 end)
 
 closeButton.MouseButton1Click:Connect(function()
-    gui.Enabled = false
+    closeButton:TweenSize(UDim2.new(0, 30, 0, 30), "Out", "Quad", 0.2, true, function()
+        frame:TweenSizeAndPosition(UDim2.new(0, 0, 0, 0), UDim2.new(0.5, 0, 0.5, 0), "In", "Quart", 0.3, true, function()
+            gui.Enabled = false
+        end)
+    end)
     isFollowing = false
     if connection then connection:Disconnect() end
+end)
+
+restoreButton.Draggable = true
+restoreButton.DragBegin:Connect(function()
+    restoreButton.Position = UDim2.new(0, restoreButton.AbsolutePosition.X, 0, restoreButton.AbsolutePosition.Y)
+end)
+
+restoreButton.DragStopped:Connect(function()
+    frame.Position = UDim2.new(0, restoreButton.AbsolutePosition.X - frame.Size.X.Offset/2 + 20, 0, restoreButton.AbsolutePosition.Y - frame.Size.Y.Offset/2 + 20)
 end)
 
 player.CharacterAdded:Connect(function()
     if connection then
         connection:Disconnect()
+        connection = nil
     end
     isFollowing = false
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        player.Character.Humanoid.Sit = false
+    end
 end)
 
 player.CharacterRemoving:Connect(function()
     if connection then
         connection:Disconnect()
+        connection = nil
     end
     isFollowing = false
 end)
