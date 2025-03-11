@@ -31,6 +31,10 @@ minimizeButton.Font = Enum.Font.GothamBold
 minimizeButton.TextSize = 16
 minimizeButton.Parent = frame
 
+local minimizeCorner = Instance.new("UICorner")
+minimizeCorner.CornerRadius = UDim.new(0, 10)
+minimizeCorner.Parent = minimizeButton
+
 local restoreButton = Instance.new("TextButton")
 restoreButton.Size = UDim2.new(0, 40, 0, 40)
 restoreButton.Position = UDim2.new(0, 0, 0, 0)
@@ -41,10 +45,6 @@ restoreButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 restoreButton.Font = Enum.Font.GothamBold
 restoreButton.TextSize = 20
 restoreButton.Parent = gui
-
-local minimizeCorner = Instance.new("UICorner")
-minimizeCorner.CornerRadius = UDim.new(1, 0)
-minimizeCorner.Parent = minimizeButton
 
 local restoreCorner = Instance.new("UICorner")
 restoreCorner.CornerRadius = UDim.new(1, 0)
